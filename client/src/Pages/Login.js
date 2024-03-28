@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const Login = () => {
 
-  const [logemail, setEmail] = useState("");
+  const [mahe_id, setMaheId] = useState("");
   const [logpassword, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
 
     axios.post('http://localhost:8000/api/login/',{
-      email: logemail,
+      mahe_id: mahe_id,
       password: logpassword,
     })
       .then(response => {
@@ -23,9 +23,9 @@ const Login = () => {
         if(response.data.message == 'LoggedIn'){
               setMessage('LoggedIn');
               localStorage.setItem("user", JSON.stringify(response.data.data));
-               setTimeout(() => {
+              setTimeout(() => {
                  window.location.href = "/dash";
-               }, 1000)
+              }, 1000)
         }
         else
         {
@@ -47,17 +47,16 @@ const Login = () => {
             </h1>
             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
               <div>
-                <label htmlFor="username" className="mr-2 font-bold">
-                  Email :
+                <label htmlFor="mahe_id" className="mr-2 font-bold">
+                  MAHE Id :
                 </label>
                 <input
                   type="text"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   required
-                  id="email"
-                  name="email"
-                  value={logemail}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="mahe_id"
+                  value={mahe_id}
+                  onChange={(e) => setMaheId(e.target.value)}
                 />
               </div>
               <div>
@@ -69,7 +68,6 @@ const Login = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   required
                   id="password"
-                  name="password"
                   value={logpassword}
                   onChange={(e) => setPassword(e.target.value)}
                 />

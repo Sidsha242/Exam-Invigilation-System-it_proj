@@ -6,9 +6,9 @@ from .models import Teacher,Exam
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = ('email',
+        fields = ('mahe_id',
                   'password',
-                  'teacher_id',)
+                  'name')
         
 
 class ExamSerializer(serializers.ModelSerializer):

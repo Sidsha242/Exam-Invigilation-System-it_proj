@@ -30,12 +30,12 @@ def register(request):
 def login(request):
     if request.method == 'POST':
         inp_data = JSONParser().parse(request)
-        email = inp_data['email']
+        mahe_id = inp_data['mahe_id']
         password = inp_data['password']
 
         print(password)
 
-        user = Teacher.objects.get(email=email)
+        user = Teacher.objects.get(mahe_id=mahe_id)
         if user.password == password:
             serializer = TeacherSerializer(user)
            

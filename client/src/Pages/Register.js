@@ -2,21 +2,21 @@ import React from 'react'
 import { useState } from "react";
 
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+
 
 const Register = () => {
-  const [regemail, setEmail] = useState("");
+  const [mahe_id, setMaheId] = useState("");
   const [regpassword, setPassword] = useState("");
-  const [teachId, setTeachId] = useState("");
+  const [name, setName] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     axios.post('http://localhost:8000/api/register/',{
-      email: regemail,
+      mahe_id: mahe_id,
       password: regpassword,
-      teacher_id: teachId
+      name: name
     })
       .then(response => {
         if(response.status === 201)
@@ -42,17 +42,16 @@ const Register = () => {
           </h1>
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
             <div>
-              <label htmlFor="username" className="mr-2 font-bold">
-                Email :
+              <label htmlFor="mahe_id" className="mr-2 font-bold">
+                Mahe Id :
               </label>
               <input
                 type="text"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 required
-                id="email"
-                name="email"
-                value={regemail}
-                onChange={(e) => setEmail(e.target.value)}
+                id="mahe_id"
+                value={mahe_id}
+                onChange={(e) => setMaheId(e.target.value)}
               />
             </div>
             <div>
@@ -70,17 +69,16 @@ const Register = () => {
               />
             </div>
             <div>
-            <label htmlFor="teacherId" className="mr-2 font-bold">
-                Teacher Id :
+            <label htmlFor="name" className="mr-2 font-bold">
+                Name :
               </label>
               <input
                 type="text"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 required
-                id="teacherId"
-                name="teacherId"
-                value={teachId}
-                onChange={(e) => setTeachId(e.target.value)}
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <button

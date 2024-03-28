@@ -6,26 +6,26 @@ import axios from 'axios'
 
 const Dashboard = () => {
 
-  const [teacher_id,setTeacherId] = useState("")
+  const [teacher_name,setTeacherName] = useState("")
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem('user'));
-    setTeacherId(items.teacher_id)
+    setTeacherName(items.name)
 
-    axios.get('http://localhost:8000/api/get_exam/')
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error);
-        });
+    // axios.get('http://localhost:8000/api/get_exam/')
+    //     .then(response => {
+    //       console.log(response)
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
 
   }, [])
   
   return (
     <div className='bg-black h-screen font-sans p-5'>
      <div className='text-white font-bold text-3xl'>Dashboard</div> 
-     <div className='text-white font-bold text-3xl mt-5'>Welcome {teacher_id}</div> 
+     <div className='text-white font-bold text-3xl mt-5'>Welcome {teacher_name}</div> 
      <div className='border border-white rounded-md mt-10 text-white p-10 font-bold'>
       Upcoming Exams
      <Table></Table>
