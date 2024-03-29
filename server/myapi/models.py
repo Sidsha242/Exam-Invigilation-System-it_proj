@@ -12,4 +12,4 @@ class Exam(models.Model):
     startTime = models.TimeField()
     endTime = models.TimeField()
     classRoom = models.CharField()
-    #mahe_id = models.CharField()
+    mahe_id = models.CharField(null=True)

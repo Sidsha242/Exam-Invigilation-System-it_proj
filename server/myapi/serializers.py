@@ -19,4 +19,5 @@ class ExamSerializer(serializers.ModelSerializer):
                   'startDate',
                   'startTime',
                   'endTime',
-                  'classRoom')
+                  'classRoom',
+                  'mahe_id')

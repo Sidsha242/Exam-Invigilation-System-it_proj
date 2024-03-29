@@ -1,109 +1,186 @@
 
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
 
 import axios from 'axios'
 
 const Dashboard = () => {
 
   const [teacher_name,setTeacherName] = useState("")
+  const [teacher_id,setTeacherId] = useState("")
+  const [examData,setExamData] = useState([])
+
+  const [selectedSubj,setSelectedSubj] = useState("")
+
+
+  let [isOpen, setIsOpen] = useState(false)
+
+  function closeModal() {
+    setIsOpen(false)
+  }
+
+  function openModal(subjCode) {
+    setIsOpen(true)
+    setSelectedSubj(subjCode)
+  }
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem('user'));
     setTeacherName(items.name)
+    setTeacherId(items.mahe_id)
 
-    // axios.get('http://localhost:8000/api/get_exam/')
-    //     .then(response => {
-    //       console.log(response)
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
+     axios.get('http://localhost:8000/api/get_exam/')
+         .then(response => {
+           console.log(response.data)
+           setExamData(response.data)
+         })
+         .catch(error => {
+           console.log(error);
+        });
 
   }, [])
+
+  const addInvig = () => {
+    closeModal()
+    console.log(selectedSubj)
+
+    
+    axios.put('http://localhost:8000/api/add_invj/',{
+        mahe_id : teacher_id,
+        subjCode: selectedSubj
+    })
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error);
+   });
+
+
+  }
   
   return (
-    <div className='bg-black h-screen font-sans p-5'>
+    <div className='bg-black h-screen font-sans p-3'>
      <div className='text-white font-bold text-3xl'>Dashboard</div> 
      <div className='text-white font-bold text-3xl mt-5'>Welcome {teacher_name}</div> 
-     <div className='border border-white rounded-md mt-10 text-white p-10 font-bold'>
+     <div className='border border-white rounded-md mt-10 text-white p-5 font-bold'>
       Upcoming Exams
-     <Table></Table>
-     
-     </div>
+    
+      <table className="w-full text-sm text-gray-400 mt-10">
+            <thead className="text-sm uppercase bg-gray-700 text-gray-400">
+                <tr>
+                    <th scope="col" className="px-6 py-3">
+                        Exam Date
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                        Exam Code
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                        Subject
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                        Start Time
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                        End Time
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                        Class Room
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                        Invigilate
+                    </th>
+                </tr>
+            </thead>
+            <tbody className='text-white'>
+                {examData.map(exam => {
+                    return(
+                        <tr className='bg-gray-800'>
+                            <th className='px-6 py-4'>{exam.startDate}</th>
+                            <th className='px-6 py-4'>{exam.subjCode}</th>
+                            <th className='px-6 py-4'>{exam.subjName}</th>
+                            <th className='px-6 py-4'>{exam.startTime}</th>
+                            <th className='px-6 py-4'>{exam.endTime}</th>
+                            <th className='px-6 py-4'>{exam.classRoom}</th>
+                            <th>
+                           {exam.mahe_id ?                      
+                                <button type="button" className="text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"  onClick={(e) => openModal(exam.subjCode)} >Invigilate</button>
+                                : <p>Booked</p>
+                           }
+                            </th>
+                        </tr>
+                        //onClick={(e) => addInvig(exam.subjCode)}
+                        
+                    )
+                })}
+            </tbody>     
+        </table>
+        <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/25" />
+          </Transition.Child>
 
-      </div>
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Are you sure you want to Invigilate this exam?
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      Your payment has been successfully submitted. We’ve sent
+                      you an email with all of the details of your order.
+                    </p>
+                  </div>
+
+                  <div className="mt-4 ml-24">
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      onClick={closeModal}
+                    >
+                      No
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex ml-20 justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      onClick={addInvig}
+                    >
+                      Yes
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+     </div>
+    </div>
   )
 }
 
 export default Dashboard
 
-
-const Table = () => {
-  return(
-      <div className="relative overflow-x-auto mt-10">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-400">
-          <thead className="text-xs uppercase bg-gray-700 text-gray-400">
-              <tr>
-                  <th scope="col" className="px-6 py-3">
-                      Exam Date
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                      Exam Code
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                      Subject
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                      Class Room
-                  </th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr className="border-b bg-gray-800 border-gray-700">
-                  <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
-                      Apple MacBook Pro 17"
-                  </th>
-                  <td className="px-6 py-4">
-                      Silver
-                  </td>
-                  <td className="px-6 py-4">
-                      Laptop
-                  </td>
-                  <td className="px-6 py-4">
-                      $2999
-                  </td>
-              </tr>
-              <tr className="border-b bg-gray-800 border-gray-700">
-                  <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
-                      Microsoft Surface Pro
-                  </th>
-                  <td className="px-6 py-4">
-                      White
-                  </td>
-                  <td className="px-6 py-4">
-                      Laptop PC
-                  </td>
-                  <td className="px-6 py-4">
-                      $1999
-                  </td>
-              </tr>
-              <tr className="border-b bg-gray-800 border-gray-700">
-                  <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
-                      Magic Mouse 2
-                  </th>
-                  <td className="px-6 py-4">
-                      Black
-                  </td>
-                  <td className="px-6 py-4">
-                      Accessories
-                  </td>
-                  <td className="px-6 py-4">
-                      $99
-                  </td>
-              </tr>
-          </tbody>
-      </table>
-  </div>
-  )
-}

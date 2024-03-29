@@ -24,7 +24,6 @@ def register(request):
             return JsonResponse(teacher_serializer.data, status=status.HTTP_201_CREATED) 
         return JsonResponse(teacher_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    #return Response({'message': 'Register'})
 
 @api_view(['POST'])
 def login(request):
@@ -55,15 +54,23 @@ def add_exam(request):
             return JsonResponse(exam_serializer.data, status=status.HTTP_201_CREATED) 
         return JsonResponse(exam_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_exam(request):
     if request.method == 'GET':
-        opt_data = Exam.objects.all()
-        # objectQuerySet = Exam.objects.filter()
-        print(opt_data)    
-        serializer = ExamSerializer(data=opt_data,many=True)
-        if serializer.is_valid(raise_exception=False):
-            return Response(serializer.data,status=status.HTTP_200_OK)
-        else:
-            print(serializer.errors)
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        exams = Exam.objects.all()
+        exam_serializer = ExamSerializer(exams, many=True)
+        return JsonResponse(exam_serializer.data, safe=False)
+    
+
+@api_view(['PUT'])
+def add_invj(request):
+    if request.method == 'PUT':
+        inp_data = JSONParser().parse(request)
+        mahe_id = inp_data['mahe_id']
+        subj_Code = inp_data['subjCode']
+        print(mahe_id)
+        print(subj_Code)
+        exam = Exam.objects.filter(subjCode=subj_Code).update(mahe_id=mahe_id)
+
+        return Response(status=status.HTTP_200_OK)
