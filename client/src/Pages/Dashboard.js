@@ -4,6 +4,8 @@ import React, { useState, useEffect, Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
 import axios from 'axios'
+import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
 
 const Dashboard = () => {
 
@@ -51,9 +53,11 @@ const Dashboard = () => {
         subjCode: selectedSubj
     })
     .then(response => {
+      toast.success('Invigilation Booked')
       console.log(response)
     })
     .catch(error => {
+      toast.error('Error in Invigilation!')
       console.log(error);
    });
 
@@ -61,14 +65,17 @@ const Dashboard = () => {
   }
   
   return (
-    <div className='bg-black h-screen font-sans p-3'>
+    <div className='bg-orange-400 h-screen font-sans p-3'>
      <div className='text-white font-bold text-3xl'>Dashboard</div> 
      <div className='text-white font-bold text-3xl mt-5'>Welcome {teacher_name}</div> 
-     <div className='border border-white rounded-md mt-10 text-white p-5 font-bold'>
+     <div className='mt-5'>
+     <Link to='/myexams' className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2'>View MyExams</Link>
+     </div>
+     <div className='border border-white rounded-md mt-10 p-5 font-bold text-2xl'>
       Upcoming Exams
     
-      <table className="w-full text-sm text-gray-400 mt-10">
-            <thead className="text-sm uppercase bg-gray-700 text-gray-400">
+      <table className="w-full text-sm mt-10">
+            <thead className="text-sm uppercase bg-white">
                 <tr>
                     <th scope="col" className="px-6 py-3">
                         Exam Date
@@ -93,18 +100,19 @@ const Dashboard = () => {
                     </th>
                 </tr>
             </thead>
-            <tbody className='text-white'>
-                {examData.map(exam => {
+            <tbody>
+                {examData.length === 0 ? <tr className='text-xl w-full bg-orange-400 flex justify-center'><th>No Upcoming Exams </th></tr> : examData.map(exam => {
+                    let date = exam.startDate.split("-").reverse().join("-");
                     return(
-                        <tr className='bg-gray-800'>
-                            <th className='px-6 py-4'>{exam.startDate}</th>
+                        <tr className='bg-white'>
+                            <th className='px-6 py-4'>{date}</th>
                             <th className='px-6 py-4'>{exam.subjCode}</th>
                             <th className='px-6 py-4'>{exam.subjName}</th>
                             <th className='px-6 py-4'>{exam.startTime}</th>
                             <th className='px-6 py-4'>{exam.endTime}</th>
                             <th className='px-6 py-4'>{exam.classRoom}</th>
                             <th>
-                           {exam.mahe_id ?                      
+                           {exam.mahe_id == null || exam.mahe_id == "" ?                      
                                 <button type="button" className="text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"  onClick={(e) => openModal(exam.subjCode)} >Invigilate</button>
                                 : <p>Booked</p>
                            }
@@ -148,12 +156,6 @@ const Dashboard = () => {
                   >
                     Are you sure you want to Invigilate this exam?
                   </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Your payment has been successfully submitted. We’ve sent
-                      you an email with all of the details of your order.
-                    </p>
-                  </div>
 
                   <div className="mt-4 ml-24">
                     <button

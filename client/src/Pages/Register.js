@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from "react";
 
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 
 const Register = () => {
@@ -22,22 +23,24 @@ const Register = () => {
         if(response.status === 201)
         {
             setMessage('Registered');
+            toast.success('Registered!')
             setTimeout(() => {
               window.location.href = "/login";
             }, 1000)
         }
       })
       .catch(error => {
+        toast.error('Invalid Registration!')
         console.log(error);
       });
 
   }
 
   return (
-    <div className='bg-black text-white font-sans'>
+    <div className=' bg-hero-pattern font-sans bg-opacity-50'>
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div className="p-6 space-y-4 md:space-y-6 sm:p-8 bg-gray-800 rounded-lg">
-          <h1 className="text-xl font-bold leading-tight tracking-tight text-blue-400 md:text-2xl">
+        <div className="p-6 space-y-4 md:space-y-6 sm:p-8 bg-white rounded-lg">
+          <h1 className="text-xl font-bold leading-tight tracking-tight text-orange-400 md:text-2xl">
             Register
           </h1>
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
@@ -50,6 +53,7 @@ const Register = () => {
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 required
                 id="mahe_id"
+                placeholder='MAHE0000000'
                 value={mahe_id}
                 onChange={(e) => setMaheId(e.target.value)}
               />

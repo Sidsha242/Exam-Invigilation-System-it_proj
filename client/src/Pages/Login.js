@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import axios from 'axios';
+import toast from 'react-hot-toast';
+
 
 
 const Login = () => {
@@ -22,6 +24,7 @@ const Login = () => {
         console.log(response)
         if(response.data.message == 'LoggedIn'){
               setMessage('LoggedIn');
+              toast.success('Logged In!');
               localStorage.setItem("user", JSON.stringify(response.data.data));
               setTimeout(() => {
                  window.location.href = "/dash";
@@ -29,6 +32,7 @@ const Login = () => {
         }
         else
         {
+            toast.error('Invalid Login!')
             setMessage('Invalid Username-Password Combination')
         }
       })
@@ -39,10 +43,10 @@ const Login = () => {
   }
 
   return (
-    <div className='bg-black h-screen text-white font-sans'>
+    <div className="h-screenfont-sans bg-hero-pattern bg-opacity-50">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8 bg-gray-800 rounded-lg">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-blue-400 md:text-2xl">
+          <div className="p-6 bg-white space-y-4 md:space-y-6 sm:p-8 rounded-lg">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-orange-400 md:text-2xl">
               Login
             </h1>
             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">

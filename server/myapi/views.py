@@ -72,5 +72,32 @@ def add_invj(request):
         print(mahe_id)
         print(subj_Code)
         exam = Exam.objects.filter(subjCode=subj_Code).update(mahe_id=mahe_id)
+        print(exam)
+        
+        return Response(status=status.HTTP_200_OK)
+    
+@api_view(['GET'])
+def get_myexam(request,mahe_id):
+    if request.method == 'GET':
+        print(mahe_id)
+        exam = Exam.objects.filter(mahe_id=mahe_id)
+        exam_serializer = ExamSerializer(exam, many=True)
+        return JsonResponse(exam_serializer.data, safe=False)
+    
+@api_view(['DELETE'])
+def delete_exam(request,subjCode):
+    if request.method == 'DELETE':
+        print(subjCode)
+        Exam.objects.filter(subjCode=subjCode).delete()
+        return Response(status=status.HTTP_200_OK)
 
+@api_view(['PUT'])
+def leave_invj(request):
+    if request.method == 'PUT':
+        inp_data = JSONParser().parse(request)
+        subj_Code = inp_data['subjCode']
+        print(subj_Code)
+        exam = Exam.objects.filter(subjCode=subj_Code).update(mahe_id='')
+        print(exam)
+        
         return Response(status=status.HTTP_200_OK)
